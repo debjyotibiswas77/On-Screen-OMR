@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMR Sheet — 180 Questions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', sans-serif; }
+
+  :root {
+    --bg: #fdf6f8;
+    --surface: #ffffff;
+    --surface2: #f7eef2;
+    --border: #e8d0da;
+    --border2: #d4a8ba;
+    --text: #1a0a10;
+    --text2: #7a4a5a;
+    --text3: #b08898;
+    --pink: #e0547a;
+    --pink-dark: #c23d63;
+    --pink-light: #f7d0dd;
+    --pink-bubble: #f0a8bc;
+    --filled: #e0547a;
+    --filled-text: #fff;
+    --danger: #c0392b;
+    --green: #1a7a4a;
+    --green-bg: #e8f7ef;
+  }
+
+  body {
+    font-family: 'Google Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  header {
+    max-width: 960px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    width: 36px; height: 36px;
+    background: var(--pink);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 18px; font-weight: 600;
+  }
+
+  header h1 {
+    font-size: 20px; font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  header p { font-size: 13px; color: var(--text2); margin-top: 1px; }
+
+  .main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  .card-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.6px;
+    text-transform: uppercase; color: var(--text2);
+    margin-bottom: 12px;
+  }
+
+  /* Session bar */
+  .session-row {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--text2); font-weight: 500; }
+
+  .field input {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-family: 'Google Sans', sans-serif;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 160px;
+  }
+
+  .field input[type=number] { width: 110px; }
+  .field input:focus { border-color: var(--pink); }
+  .field input::placeholder { color: var(--text3); }
+
+  .btn-save {
+    height: 36px; padding: 0 18px;
+    font-size: 13px; font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    align-self: flex-end;
+  }
+  .btn-save:hover { background: var(--pink-dark); }
+  .btn-save:active { transform: scale(0.97); }
+
+  .btn-sec {
+    height: 36px; padding: 0 14px;
+    font-size: 13px; font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    align-self: flex-end;
+  }
+  .btn-sec:hover { background: var(--surface2); }
+
+  /* Stats */
+  .stats-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .stat-pill .sv {
+    font-size: 20px; font-weight: 600;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--pink);
+    display: block;
+  }
+
+  .stat-pill .sl {
+    font-size: 11px; color: var(--text2); margin-top: 1px;
+  }
+
+  /* OMR Grid */
+  .omr-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px 8px;
+  }
+
+  .q-row {
+    display: flex; align-items: center; gap: 3px;
+    padding: 1px 0;
+  }
+
+  .q-num {
+    font-size: 10px;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text3);
+    width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .bubble {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--pink-bubble);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--pink-bubble);
+    transition: background 0.1s, border-color 0.1s, color 0.1s, transform 0.1s;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .bubble:hover { border-color: var(--pink); color: var(--pink); transform: scale(1.1); }
+  .bubble.filled { background: var(--filled); border-color: var(--filled); color: var(--filled-text); }
+  .bubble.filled:hover { transform: scale(1.1); }
+
+  /* Records table */
+  .rec-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  .badge {
+    display: inline-block;
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .score-badge {
+    background: var(--green-bg);
+    color: var(--green);
+  }
+
+  .del-btn {
+    background: none; border: none;
+    color: var(--text3); cursor: pointer;
+    font-size: 14px; padding: 2px 6px;
+    border-radius: 4px; transition: color 0.15s, background 0.15s;
+  }
+  .del-btn:hover { color: var(--danger); background: #fdecea; }
+
+  .load-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer;
+    font-size: 11px; padding: 3px 8px;
+    border-radius: 6px; font-family: 'Google Sans', sans-serif;
+    transition: background 0.15s;
+  }
+  .load-btn:hover { background: var(--pink-light); color: var(--pink-dark); border-color: var(--pink); }
+
+  .empty-msg {
+    text-align: center; color: var(--text3);
+    padding: 24px; font-size: 13px;
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--text); color: #fff;
+    padding: 10px 20px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    transition: transform 0.25s ease;
+    z-index: 999; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .divider { width: 1px; background: var(--border); align-self: stretch; margin: 0 4px; }
+
+  @media (max-width: 600px) {
+    .omr-grid { grid-template-columns: repeat(2, 1fr); }
+    .bubble { width: 18px; height: 18px; font-size: 7px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">O</div>
+  <div>
+    <h1>OMR Answer Sheet</h1>
+    <p>180 questions · A B C D · records saved locally</p>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Session inputs -->
+  <div class="card">
+    <div class="card-title">New session</div>
+    <div class="session-row">
+      <div class="field">
+        <label>Session name</label>
+        <input type="text" id="sessionName" placeholder="e.g. Mock 1" maxlength="40">
+      </div>
+      <div class="field">
+        <label>Total marks</label>
+        <input type="number" id="totalMarks" placeholder="e.g. 180" min="0" max="9999">
+      </div>
+      <div class="field">
+        <label>Marks scored</label>
+        <input type="number" id="marksScored" placeholder="e.g. 145" min="0" max="9999">
+      </div>
+      <button class="btn-save" onclick="saveRecord()">Save record</button>
+      <button class="btn-sec" onclick="clearSheet()">Clear sheet</button>
+    </div>
+  </div>
+
+  <!-- Live stats -->
+  <div class="card" style="padding:14px 20px">
+    <div class="stats-row" id="statsRow">
+      <div class="stat-pill"><span class="sv" id="stAns">0</span><span class="sl">Answered</span></div>
+      <div class="stat-pill"><span class="sv" id="stLeft">180</span><span class="sl">Remaining</span></div>
+      <div class="divider"></div>
+      <div class="stat-pill"><span class="sv" id="stA">0</span><span class="sl">A</span></div>
+      <div class="stat-pill"><span class="sv" id="stB">0</span><span class="sl">B</span></div>
+      <div class="stat-pill"><span class="sv" id="stC">0</span><span class="sl">C</span></div>
+      <div class="stat-pill"><span class="sv" id="stD">0</span><span class="sl">D</span></div>
+    </div>
+  </div>
+
+  <!-- OMR Sheet -->
+  <div class="card">
+    <div class="card-title">Mark your answers</div>
+    <div class="omr-grid" id="omrGrid"></div>
+  </div>
+
+  <!-- Records -->
+  <div class="card">
+    <div class="card-title">Saved records</div>
+    <div class="rec-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Session</th>
+            <th>Score</th>
+            <th>Answered</th>
+            <th>A</th><th>B</th><th>C</th><th>D</th>
+            <th>Date</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="recBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const OPTS = ['A','B','C','D'];
+const answers = new Array(180).fill(null);
+const STORAGE_KEY = 'omr_records_v1';
+let records = [];
+
+// Load records from localStorage
+try {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) records = JSON.parse(saved);
+} catch(e) {}
+
+// Build grid
+function buildGrid() {
+  const grid = document.getElementById('omrGrid');
+  const cols = [[], [], [], []];
+  for (let i = 0; i < 180; i++) cols[Math.floor(i / 45)].push(i);
+  cols.forEach(col => {
+    const colDiv = document.createElement('div');
+    colDiv.style.display = 'flex';
+    colDiv.style.flexDirection = 'column';
+    colDiv.style.gap = '1px';
+    col.forEach(i => {
+      const row = document.createElement('div');
+      row.className = 'q-row';
+      const num = document.createElement('span');
+      num.className = 'q-num';
+      num.textContent = i + 1;
+      row.appendChild(num);
+      OPTS.forEach(opt => {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        b.textContent = opt;
+        b.dataset.q = i;
+        b.dataset.opt = opt;
+        b.setAttribute('role', 'button');
+        b.setAttribute('aria-label', 'Question ' + (i+1) + ' option ' + opt);
+        b.addEventListener('click', () => mark(i, opt, b));
+        row.appendChild(b);
+      });
+      colDiv.appendChild(row);
+    });
+    grid.appendChild(colDiv);
+  });
+}
+
+function mark(q, opt) {
+  answers[q] = answers[q] === opt ? null : opt;
+  document.querySelectorAll(`.bubble[data-q="${q}"]`).forEach(b => {
+    b.classList.toggle('filled', b.dataset.opt === answers[q]);
+  });
+  updateStats();
+}
+
+function updateStats() {
+  const c = { A:0, B:0, C:0, D:0, ans:0 };
+  answers.forEach(a => { if (a) { c[a]++; c.ans++; } });
+  document.getElementById('stAns').textContent = c.ans;
+  document.getElementById('stLeft').textContent = 180 - c.ans;
+  document.getElementById('stA').textContent = c.A;
+  document.getElementById('stB').textContent = c.B;
+  document.getElementById('stC').textContent = c.C;
+  document.getElementById('stD').textContent = c.D;
+}
+
+function clearSheet() {
+  answers.fill(null);
+  document.querySelectorAll('.bubble').forEach(b => b.classList.remove('filled'));
+  updateStats();
+  showToast('Sheet cleared');
+}
+
+function saveRecord() {
+  const name = document.getElementById('sessionName').value.trim() || 'Unnamed';
+  const total = document.getElementById('totalMarks').value;
+  const scored = document.getElementById('marksScored').value;
+  const snap = [...answers];
+  const c = { A:0, B:0, C:0, D:0, ans:0 };
+  snap.forEach(a => { if (a) { c[a]++; c.ans++; } });
+  const rec = {
+    id: Date.now(),
+    name, total: total||'', scored: scored||'',
+    ans: c.ans, A: c.A, B: c.B, C: c.C, D: c.D,
+    snap,
+    date: new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'2-digit' })
+  };
+  records.unshift(rec);
+  persist();
+  renderRecords();
+  document.getElementById('sessionName').value = '';
+  document.getElementById('totalMarks').value = '';
+  document.getElementById('marksScored').value = '';
+  showToast('Record saved: ' + name);
+}
+
+function loadRecord(id) {
+  const rec = records.find(r => r.id === id);
+  if (!rec) return;
+  answers.fill(null);
+  rec.snap.forEach((a, i) => { answers[i] = a; });
+  document.querySelectorAll('.bubble').forEach(b => {
+    b.classList.toggle('filled', b.dataset.opt === answers[+b.dataset.q]);
+  });
+  updateStats();
+  document.getElementById('sessionName').value = rec.name;
+  document.getElementById('totalMarks').value = rec.total;
+  document.getElementById('marksScored').value = rec.scored;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('Loaded: ' + rec.name);
+}
+
+function deleteRecord(id) {
+  records = records.filter(r => r.id !== id);
+  persist();
+  renderRecords();
+  showToast('Record deleted');
+}
+
+function persist() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); } catch(e) {}
+}
+
+function renderRecords() {
+  const tbody = document.getElementById('recBody');
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-msg">No records yet — fill the sheet and hit Save record.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  records.forEach((r, i) => {
+    const scoreStr = r.scored && r.total ? `${r.scored} / ${r.total}` : r.scored || '—';
+    const pct = r.scored && r.total ? ' (' + Math.round(+r.scored / +r.total * 100) + '%)' : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--text3);font-family:'Google Sans',sans-serif;font-size:11px">${i+1}</td>
+      <td><span class="badge">${escHtml(r.name)}</span></td>
+      <td><span class="badge score-badge">${escHtml(scoreStr)}${pct}</span></td>
+      <td style="font-family:'Google Sans',sans-serif">${r.ans}/180</td>
+      <td style="font-family:'Google Sans',sans-serif">${r.A}</td>
+      <td style="font-family:'Google Sans',sans-serif">${r.B}</td>
+      <td style="font-family:'Google Sans',sans-serif">${r.C}</td>
+      <td style="font-family:'Google Sans',sans-serif">${r.D}</td>
+      <td style="color:var(--text3);font-size:12px">${r.date}</td>
+      <td><button class="load-btn" onclick="loadRecord(${r.id})">Load</button></td>
+      <td><button class="del-btn" title="Delete" onclick="deleteRecord(${r.id})">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+buildGrid();
+renderRecords();
+</script>
+</body>
+</html>
